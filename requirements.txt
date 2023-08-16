@@ -1,0 +1,7 @@
+requests
+lxml
+mariadb
+SQLAlchemy 
+fastapi
+uvicorn
+rq
