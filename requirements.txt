@@ -5,3 +5,4 @@ SQLAlchemy
 fastapi
 uvicorn
 rq
+bs4
