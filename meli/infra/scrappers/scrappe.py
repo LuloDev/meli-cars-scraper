@@ -65,7 +65,7 @@ class MeliScrappe():
         typeFueld = self.extract_row_by_header(
             result.text, 'Tipo de combustible')
         if typeFueld is not None:
-            item_data.typeFueld = TypeFuel.DISEL.value if typeFueld == 'Diésel' else TypeFuel.GASOLINE.value
+            item_data.typeFueld = TypeFuel.DIESEL.value if typeFueld == 'Diésel' else TypeFuel.GASOLINE.value
         item_data.version = self.extract_row_by_header(result.text, 'Versión')
         return item_data
 

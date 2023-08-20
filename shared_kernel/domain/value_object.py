@@ -21,11 +21,13 @@ class ValueObject:
         instance = cls(value=value)
         return instance
 
+
 class TypeFuel(ValueObject, str, Enum):
     GASOLINE = "GASOLINE"
-    DISEL = "GASOLINE"
+    DIESEL = "DIESEL"
     GAS = "GAS"
     ELECTRIC = "ELECTRIC"
+
 
 class TypeTransmission(ValueObject, str, Enum):
     MECANIC = "MECANIC"
