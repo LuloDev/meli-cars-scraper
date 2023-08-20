@@ -4,10 +4,10 @@ from sqlalchemy.orm import Session
 
 from meli.infra.repository.connection import SessionLocal, db
 from meli.infra.repository.car_repository import complete_data, get_first_by_url, Base
+from meli.infra.repository.url_scrappe_repository import delete_url
 from meli.infra.scrappers.scrappe import MeliScrappe
-from meli.domain.entity.product_meli import MeliItem
 from meli.infra.queue.connection import q
-from meli.infra.repository.connection import get_db, engine
+from meli.infra.repository.connection import engine
 
 
 class ScrapeItemUseCase:
@@ -27,7 +27,8 @@ def scrape_item(url: str):
     Base.metadata.create_all(bind=engine)
     scrape = MeliScrappe()
     item = scrape.scrape_data_item(url)
-    print(item)
     prev_car = get_first_by_url(db, url)
     if (prev_car is not None):
         complete_data(db, item, prev_car.id)
+        if any([item.brand, item.color, item.engine, item.model, item.typeFueld, item.transmission, item.version]):
+            delete_url(db, url)
