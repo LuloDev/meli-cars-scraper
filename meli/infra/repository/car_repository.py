@@ -1,5 +1,7 @@
-import sqlalchemy
 import datetime
+import dataclasses
+import sqlalchemy
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 
@@ -11,7 +13,9 @@ from meli.domain.entity.product_meli import MeliItem
 Base = declarative_base()
 
 
+@dataclasses.dataclass
 class CarRepository(Base):
+    """Class orm map table for cars"""
     __tablename__ = 'cars'
     id = sqlalchemy.Column(
         sqlalchemy.Integer, primary_key=True, index=True, autoincrement=True)
@@ -35,38 +39,39 @@ class CarRepository(Base):
     date_published = sqlalchemy.Column(sqlalchemy.Date, nullable=True)
 
 
-def create_car(db: Session, car: MeliItem):
+def create_car(db_connection: Session, car_item: MeliItem):
     db_car = CarRepository()
-    db_car.title = car.title
-    db_car.url = car.url
-    db_car.year = car.year
-    db_car.price = car.price
-    db.add(db_car)
-    db.commit()
-    db.refresh(db_car)
+    db_car.title = car_item.title
+    db_car.url = car_item.url
+    db_car.year = car_item.year
+    db_car.price = car_item.price
+    db_connection.add(db_car)
+    db_connection.commit()
+    db_connection.refresh(db_car)
     return db_car
 
 
-def update_price(db: Session, car: MeliItem, id: int):
-    db.query(CarRepository).filter(CarRepository.id == id).update(
-        {CarRepository.price: car.price, CarRepository.update_at: datetime.datetime.now()})
-    db.commit()
+def update_price(db_connection: Session, car_item: MeliItem, id_car: int):
+    db_connection.query(CarRepository).filter(CarRepository.id == id_car).update(
+        {CarRepository.price: car_item.price, CarRepository.update_at: datetime.datetime.now()})
+    db_connection.commit()
 
 
-def complete_data(db: Session, car: MeliItem, id: int):
-    db.query(CarRepository).filter(CarRepository.id == id).update({CarRepository.price: car.price,
-                                                                   CarRepository.color: car.color,
-                                                                   CarRepository.engine: car.engine,
-                                                                   CarRepository.brand: car.brand,
-                                                                   CarRepository.model: car.model,
-                                                                   CarRepository.version: car.version,
-                                                                   CarRepository.type_fueld: car.typeFueld,
-                                                                   CarRepository.transmission: car.transmission,
-                                                                   CarRepository.kilometers: car.kilometers,
-                                                                   CarRepository.date_published: car.date_published,
-                                                                   CarRepository.update_at: datetime.datetime.now()})
-    db.commit()
+def complete_data(db_connection: Session, car_item: MeliItem, id_car: int):
+    db_connection.query(CarRepository).filter(
+        CarRepository.id == id_car).update({CarRepository.price: car_item.price,
+                                            CarRepository.color: car_item.color,
+                                            CarRepository.engine: car_item.engine,
+                                            CarRepository.brand: car_item.brand,
+                                            CarRepository.model: car_item.model,
+                                            CarRepository.version: car_item.version,
+                                            CarRepository.type_fueld: car_item.typeFueld,
+                                            CarRepository.transmission: car_item.transmission,
+                                            CarRepository.kilometers: car_item.kilometers,
+                                            CarRepository.date_published: car_item.date_published,
+                                            CarRepository.update_at: datetime.datetime.now()})
+    db_connection.commit()
 
 
-def get_first_by_url(db: Session, url: str):
-    return db.query(CarRepository).filter(CarRepository.url == url).first()
+def get_first_by_url(db_connection: Session, url_search: str):
+    return db_connection.query(CarRepository).filter(CarRepository.url == url_search).first()

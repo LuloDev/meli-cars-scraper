@@ -1,4 +1,4 @@
-from meli.infra.repository.connection import SessionLocal, db
+from meli.infra.repository.connection import SessionLocal, db_connection
 from meli.infra.repository.car_repository import complete_data, get_first_by_url, Base
 from meli.infra.repository.url_scrappe_repository import delete_url
 from meli.infra.scrappers.scrappe import MeliScrappe
@@ -9,8 +9,8 @@ from meli.infra.repository.connection import engine
 class ScrapeItemUseCase:
     """Class providingFunction to scrappe one item data and save data"""
 
-    def __init__(self, db_connection: SessionLocal, url: str):
-        self.db_connection = db_connection
+    def __init__(self, db_connection_session: SessionLocal, url: str):
+        self.db_connection = db_connection_session
         self.url = url
 
     def execute(self):
@@ -24,9 +24,9 @@ def scrape_item(url: str):
     Base.metadata.create_all(bind=engine)
     scrape = MeliScrappe()
     item = scrape.scrape_data_item(url)
-    prev_car = get_first_by_url(db, url)
+    prev_car = get_first_by_url(db_connection, url)
     if prev_car is not None:
-        complete_data(db, item, prev_car.id)
+        complete_data(db_connection, item, prev_car.id)
         if any([item.brand, item.color, item.engine,
-                item.model, item.typeFueld, item.transmission, item.version]):
-            delete_url(db, url)
+                item.model, item.type_fueld, item.transmission, item.version]):
+            delete_url(db_connection, url)

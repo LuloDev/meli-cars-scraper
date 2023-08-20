@@ -14,17 +14,17 @@ class ScrapeListUseCase:
         self.url = url
 
     def execute(self):
-        meliScrappe = MeliScrappe()
-        result = meliScrappe.scrape_list(self.url)
+        meli_scrappe = MeliScrappe()
+        result = meli_scrappe.scrape_list(self.url)
         next_url: str | None = result[1]
         items: [MeliItem] = result[0]
         for value in items:
-            self.saveItem(value)
+            self.save_item(value)
         if next_url is not None:
             create_url(self.db_connection, next_url, 'list')
         delete_url(self.db_connection, self.url)
 
-    def saveItem(self, item: MeliItem):
+    def save_item(self, item: MeliItem):
         prev_car = get_first_by_url(self.db_connection, item.url)
         if prev_car is None:
             create_car(self.db_connection, item)

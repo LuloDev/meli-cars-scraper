@@ -1,5 +1,6 @@
-import requests
 import re
+import requests
+
 from bs4 import BeautifulSoup, Tag
 
 from meli.domain.entity.product_meli import MeliItem
@@ -7,9 +8,10 @@ from shared_kernel.domain.value_object import TypeFuel, TypeTransmission
 
 
 class MeliScrappe():
+    """Class providingFunction to scrappe and parse data from meli site"""
 
     def get(self, url: str):
-        return requests.get(url)
+        return requests.get(url, timeout=10)
 
     def scrape_list(self, url: str):
         data = self.get(url)
@@ -29,8 +31,9 @@ class MeliScrappe():
         url = self.sanetize_url(item.div.div.div.section.div
                                 .next_sibling.div.div.div.a['href'])
         title = item.div.div.div.section.div.next_sibling.div.div.div.a['title']
-        price = item.div.div.div.next_sibling.div.div.div.div.div.span.span.next_sibling.next_sibling.text
-        year = item.div.div.div.next_sibling.div.div.next_sibling.ul.li.text
+        div_data = item.div.div.div.next_sibling.div.div
+        price = div_data.div.div.div.span.span.next_sibling.next_sibling.text
+        year = div_data.next_sibling.ul.li.text
         item_data = MeliItem()
         item_data.title = title
         item_data.url = url
@@ -61,15 +64,23 @@ class MeliScrappe():
         transmission = self.extract_row_by_header(
             result.text, 'Transmisión')
         if transmission is not None:
-            item_data.transmission = TypeTransmission.AUTOMATIC.value if transmission == 'Automática' else TypeTransmission.MECANIC.value
-        typeFueld = self.extract_row_by_header(
+            if transmission == 'Automática':
+                item_data.transmission = TypeTransmission.AUTOMATIC.value
+            else:
+                item_data.transmission = TypeTransmission.MECANIC.value
+
+        type_fueld = self.extract_row_by_header(
             result.text, 'Tipo de combustible')
-        if typeFueld is not None:
-            item_data.typeFueld = TypeFuel.DIESEL.value if typeFueld == 'Diésel' else TypeFuel.GASOLINE.value
+        if type_fueld is not None:
+            if type_fueld == 'Diésel':
+                item_data.type_fueld = TypeFuel.DIESEL.value
+            else:
+                item_data.type_fueld = TypeFuel.GASOLINE.value
+
         item_data.version = self.extract_row_by_header(result.text, 'Versión')
         return item_data
 
-    def extract_row_by_header(self, html_content: str, header_name: str) -> str | None:
+    def extract_row_by_header(self, html_content: str, header_name: str):
         soup = BeautifulSoup(html_content, 'html.parser')
         target_row = None
         for row in soup.find_all('tr', class_='andes-table__row'):

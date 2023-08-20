@@ -1,5 +1,7 @@
-import sqlalchemy
 import datetime
+import dataclasses
+import sqlalchemy
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
 
@@ -7,7 +9,9 @@ from sqlalchemy.orm import Session
 Base = declarative_base()
 
 
+@dataclasses.dataclass
 class TaskRepository(Base):
+    """Class orm map table for task to schedule scrappe"""
     __tablename__ = 'tasks'
     id = sqlalchemy.Column(
         sqlalchemy.Integer, primary_key=True, index=True, autoincrement=True)
@@ -21,14 +25,14 @@ class TaskRepository(Base):
     update_at = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
 
 
-def create_task(db: Session, url: str):
+def create_task(db_connection: Session, url_task: str):
     db_task = TaskRepository()
-    db_task.url = url
-    db.add(db_task)
-    db.commit()
-    db.refresh(db_task)
+    db_task.url = url_task
+    db_connection.add(db_task)
+    db_connection.commit()
+    db_connection.refresh(db_task)
     return db_task
 
 
-def get_tasks(db: Session):
-    return db.query(TaskRepository).all()
+def get_tasks(db_connection: Session):
+    return db_connection.query(TaskRepository).all()

@@ -7,6 +7,7 @@ from shared_kernel.domain.value_object import TypeFuel, TypeTransmission
 
 @dataclass(eq=False, slots=True)
 class Car(Entity):
+    """Class representing a Car Data"""
     title: str
     year: int
     color: str

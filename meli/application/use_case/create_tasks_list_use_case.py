@@ -12,4 +12,7 @@ class CreateTaskListUseCase:
     def execute(self):
         tasks = get_tasks(self.db_connection)
         for task in tasks:
-            create_url(self.db_connection, task.url, 'list')
+            self.save_url(task.url)
+
+    def save_url(self, url_task: str):
+        create_url(self.db_connection, url_task, 'list')
