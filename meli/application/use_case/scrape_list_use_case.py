@@ -6,9 +6,10 @@ from meli.infra.repository.url_scrappe_repository import create_url, delete_url
 
 
 class ScrapeListUseCase:
+    """Class providingFunction to scrappe list items data and save data"""
 
-    def __init__(self, db: SessionLocal, url: str) -> None:
-        self.db = db
+    def __init__(self, db_connection: SessionLocal, url: str) -> None:
+        self.db_connection = db_connection
         self.scrape = MeliScrappe()
         self.url = url
 
@@ -20,13 +21,13 @@ class ScrapeListUseCase:
         for value in items:
             self.saveItem(value)
         if next_url is not None:
-            create_url(self.db, next_url, 'list')
-        delete_url(self.db, self.url)
+            create_url(self.db_connection, next_url, 'list')
+        delete_url(self.db_connection, self.url)
 
     def saveItem(self, item: MeliItem):
-        prev_car = get_first_by_url(self.db, item.url)
+        prev_car = get_first_by_url(self.db_connection, item.url)
         if prev_car is None:
-            create_car(self.db, item)
-            create_url(self.db, item.url, 'item')
+            create_car(self.db_connection, item)
+            create_url(self.db_connection, item.url, 'item')
         else:
-            update_price(self.db, item, prev_car.id)
+            update_price(self.db_connection, item, prev_car.id)

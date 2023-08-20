@@ -5,18 +5,21 @@ from meli.application.use_case.scrape_item_use_case import ScrapeItemUseCase
 
 
 class ExecuteNextTaskUseCase:
+    """Class providingFunction execute next task scrappe"""
 
-    def __init__(self, db: SessionLocal):
-        self.db = db
+    def __init__(self, db_connection: SessionLocal):
+        self.db_connection = db_connection
 
     def execute_list(self):
-        url: UrlRepository = get_next_url(self.db, 'list')
-        if (url is not None):
-            scrape_list_use_case = ScrapeListUseCase(self.db, url.url)
+        url: UrlRepository = get_next_url(self.db_connection, 'list')
+        if url is not None:
+            scrape_list_use_case = ScrapeListUseCase(
+                self.db_connection, url.url)
             scrape_list_use_case.execute()
 
     def execute_item(self):
-        url: UrlRepository = get_next_url(self.db, 'item')
-        if (url is not None):
-            scrape_item_use_case = ScrapeItemUseCase(self.db, url.url)
+        url: UrlRepository = get_next_url(self.db_connection, 'item')
+        if url is not None:
+            scrape_item_use_case = ScrapeItemUseCase(
+                self.db_connection, url.url)
             scrape_item_use_case.execute()

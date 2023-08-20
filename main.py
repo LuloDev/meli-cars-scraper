@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session
 # from rocketry import Rocketry
 
@@ -33,18 +33,18 @@ def execute_next_task(db: Session = Depends(get_db)):
 
 
 @app.get("/execute/task", response_model=None)
-def read_users(db: Session = Depends(get_db)):
-    task_use_case = ExecuteNextTaskUseCase(db)
+def execute_task(db_connection: Session = Depends(get_db)):
+    task_use_case = ExecuteNextTaskUseCase(db_connection)
     task_use_case.execute_list()
 
 
 @app.get("/execute/task/items", response_model=None)
-def read_users(db: Session = Depends(get_db)):
-    task_use_case = ExecuteNextTaskUseCase(db)
+def execute_task_item(db_connection: Session = Depends(get_db)):
+    task_use_case = ExecuteNextTaskUseCase(db_connection)
     task_use_case.execute_item()
 
 
 @app.get("/create/task", response_model=None)
-def read_users(db: Session = Depends(get_db)):
-    task_use_case = CreateTaskListUseCase(db)
+def create_task(db_connection: Session = Depends(get_db)):
+    task_use_case = CreateTaskListUseCase(db_connection)
     task_use_case.execute()
