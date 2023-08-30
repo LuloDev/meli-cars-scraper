@@ -6,3 +6,4 @@ fastapi
 uvicorn
 beautifulsoup4
 pydantic==1.10.10
+rocketry
