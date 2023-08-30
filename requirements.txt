@@ -5,4 +5,5 @@ SQLAlchemy
 fastapi
 uvicorn
 rq
-bs4
+beautifulsoup4
+pydantic==1.10.10
