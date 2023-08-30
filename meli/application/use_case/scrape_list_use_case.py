@@ -3,6 +3,7 @@ from meli.infra.scrappers.scrappe import MeliScrappe
 from meli.domain.entity.product_meli import MeliItem
 from meli.infra.repository.car_repository import create_car, get_first_by_url, update_price
 from meli.infra.repository.url_scrappe_repository import create_url, delete_url
+from meli.infra.repository.history_price_repository import create_price
 
 
 class ScrapeListUseCase:
@@ -28,7 +29,9 @@ class ScrapeListUseCase:
         prev_car = get_first_by_url(self.db_connection, item.url)
         if prev_car is None:
             car = create_car(self.db_connection, item)
-            update_price(self.db_connection, item, car.id)
+            create_price(self.db_connection, car.id, car.price)
             create_url(self.db_connection, item.url, 'item')
         else:
             update_price(self.db_connection, item, prev_car.id)
+            if prev_car.price != item.price:
+                create_price(self.db_connection, car.id, car.price)

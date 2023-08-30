@@ -73,5 +73,5 @@ def complete_data(db_connection: Session, car_item: MeliItem, id_car: int):
     db_connection.commit()
 
 
-def get_first_by_url(db_connection: Session, url_search: str):
+def get_first_by_url(db_connection: Session, url_search: str) -> CarRepository:
     return db_connection.query(CarRepository).filter(CarRepository.url == url_search).first()

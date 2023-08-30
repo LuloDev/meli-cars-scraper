@@ -27,8 +27,15 @@ class ExecuteNextTaskUseCase:
             self.db_connection.rollback()
 
     def execute_item(self):
-        url: UrlRepository = get_next_url(self.db_connection, 'item')
-        if url is not None:
-            scrape_item_use_case = ScrapeItemUseCase(
-                self.db_connection, url.url)
-            scrape_item_use_case.execute()
+        try:
+            url: UrlRepository = get_next_url(self.db_connection, 'item')
+            if url is not None:
+                scrape_item_use_case = ScrapeItemUseCase(
+                    self.db_connection, url.url)
+                scrape_item_use_case.execute()
+        except IntegrityError as e:
+            print(e)
+            self.db_connection.rollback()
+        except DatabaseError as e:
+            print(e)
+            self.db_connection.rollback()

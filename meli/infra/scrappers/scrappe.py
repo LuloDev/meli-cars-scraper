@@ -57,7 +57,7 @@ class MeliScrappe():
         item_data.color = self.extract_row_by_header(result.text, 'Color')
         engine = self.extract_row_by_header(result.text, 'Motor')
         if engine is not None:
-            item_data.engine = float(engine)
+            item_data.engine = float(engine.replace(".", ""))
         kilometers = self.extract_row_by_header(
             result.text, 'Kilómetros')
         if kilometers is not None:
