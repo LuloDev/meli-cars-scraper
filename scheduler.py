@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
 from rocketry import Rocketry
+from rocketry.conds import retry, minutely, daily
+
 
 from meli.infra.repository import car_repository
 from meli.infra.repository import history_price_repository
@@ -18,7 +20,7 @@ url_scrappe_repository.Base.metadata.create_all(bind=engine)
 app = Rocketry(execution="async")
 
 
-@app.task('every 1 day')
+@app.task(daily | retry(3))
 def create_task_scrape():
     db: Session = db_connection
     task_use_case = CreateTaskListUseCase(db)
@@ -26,13 +28,13 @@ def create_task_scrape():
 
 
 @app.task('every 20 minute')
-def execute_next_task():
+def execute_next_task_list():
     db: Session = db_connection
     task_use_case = ExecuteNextTaskUseCase(db)
     task_use_case.execute_list()
 
 
-@app.task('every 1 minute')
+@app.task(minutely | retry(3))
 def execute_task_item():
     db: Session = db_connection
     task_use_case = ExecuteNextTaskUseCase(db)
