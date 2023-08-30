@@ -27,7 +27,8 @@ class ScrapeListUseCase:
     def save_item(self, item: MeliItem):
         prev_car = get_first_by_url(self.db_connection, item.url)
         if prev_car is None:
-            create_car(self.db_connection, item)
+            car = create_car(self.db_connection, item)
+            update_price(self.db_connection, item, car.id)
             create_url(self.db_connection, item.url, 'item')
         else:
             update_price(self.db_connection, item, prev_car.id)

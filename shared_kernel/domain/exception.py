@@ -11,3 +11,13 @@ class BaseMsgException(Exception):
 
     def __str__(self):
         return self.message
+
+
+class InvalidUrlException(BaseMsgException):
+    """This exception is raised to invalid url."""
+    message = "Invalid url."
+
+
+class IncompleteDataException(BaseMsgException):
+    """This exception is raised to incomplete data."""
+    message = "Incomplete data."

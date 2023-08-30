@@ -45,9 +45,9 @@ def delete_url(db_connection: Session, url_to_scrappe: str):
     db_connection.commit()
 
 
-def error_on_scrape(db_connection: Session, id_url: int, error_text: str):
+def error_on_scrape(db_connection: Session, url_to_scrappe: str, error_text: str):
     error_trunc = (error_text[:1000]) if len(error_text) > 1000 else error_text
-    db_connection.query(UrlRepository).filter(UrlRepository.id == id_url).update(
+    db_connection.query(UrlRepository).filter(UrlRepository.url == url_to_scrappe).update(
         {UrlRepository.error: error_trunc,
          UrlRepository.attempts: UrlRepository.attempts + 1,
          UrlRepository.date_last_attempt: datetime.datetime.now(),
@@ -57,4 +57,4 @@ def error_on_scrape(db_connection: Session, id_url: int, error_text: str):
 
 def get_next_url(db_connection: Session, type_url: str):
     return db_connection.query(UrlRepository).filter(
-        UrlRepository.type_url == type_url).first()
+        UrlRepository.type_url == type_url, UrlRepository.attempts < 10).first()

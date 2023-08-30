@@ -46,7 +46,10 @@ class MeliScrappe():
         result = self.get(url)
         item_data.url = url
         soup = BeautifulSoup(result.text, 'lxml')
-        item_data.title = soup.find('h1', class_='ui-pdp-title').text
+        title = soup.find('h1', class_='ui-pdp-title')
+        if title is None:
+            return None
+        item_data.title = title.text
         item_data.price = float(
             soup.find('span', class_='andes-money-amount__fraction').text.replace(".", ""))
         item_data.brand = self.extract_row_by_header(result.text, 'Marca')
