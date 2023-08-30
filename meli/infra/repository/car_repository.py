@@ -65,7 +65,7 @@ def complete_data(db_connection: Session, car_item: MeliItem, id_car: int):
                                             CarRepository.brand: car_item.brand,
                                             CarRepository.model: car_item.model,
                                             CarRepository.version: car_item.version,
-                                            CarRepository.type_fueld: car_item.typeFueld,
+                                            CarRepository.type_fueld: car_item.type_fueld,
                                             CarRepository.transmission: car_item.transmission,
                                             CarRepository.kilometers: car_item.kilometers,
                                             CarRepository.date_published: car_item.date_published,
