@@ -21,3 +21,8 @@ class InvalidUrlException(BaseMsgException):
 class IncompleteDataException(BaseMsgException):
     """This exception is raised to incomplete data."""
     message = "Incomplete data."
+
+
+class DuplicateUrlException(BaseMsgException):
+    """This exception is raised to duplicate url."""
+    message = "Duplicate url."

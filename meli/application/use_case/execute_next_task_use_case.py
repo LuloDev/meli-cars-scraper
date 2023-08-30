@@ -1,3 +1,5 @@
+from sqlalchemy.exc import DatabaseError, IntegrityError
+
 from meli.infra.repository.connection import SessionLocal
 from meli.infra.repository.url_scrappe_repository import get_next_url, UrlRepository
 from meli.application.use_case.scrape_list_use_case import ScrapeListUseCase
@@ -11,11 +13,18 @@ class ExecuteNextTaskUseCase:
         self.db_connection = db_connection
 
     def execute_list(self):
-        url: UrlRepository = get_next_url(self.db_connection, 'list')
-        if url is not None:
-            scrape_list_use_case = ScrapeListUseCase(
-                self.db_connection, url.url)
-            scrape_list_use_case.execute()
+        try:
+            url: UrlRepository = get_next_url(self.db_connection, 'list')
+            if url is not None:
+                scrape_list_use_case = ScrapeListUseCase(
+                    self.db_connection, url.url)
+                scrape_list_use_case.execute()
+        except IntegrityError as e:
+            print(e)
+            self.db_connection.rollback()
+        except DatabaseError as e:
+            print(e)
+            self.db_connection.rollback()
 
     def execute_item(self):
         url: UrlRepository = get_next_url(self.db_connection, 'item')
