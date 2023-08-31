@@ -1,8 +1,8 @@
 import asyncio
 import uvicorn
 
-from api import app as app_fastapi
-from scheduler import app as app_rocketry
+from shared_kernel.infra.fastapi.api import app as app_fastapi
+from shared_kernel.infra.schedule.scheduler import app as app_rocketry
 
 
 class Server(uvicorn.Server):

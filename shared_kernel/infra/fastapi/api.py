@@ -1,6 +1,6 @@
 from fastapi import Depends, FastAPI
 from sqlalchemy.orm import Session
-from scheduler import app as app_rocketry
+from shared_kernel.infra.schedule.scheduler import app as app_rocketry
 
 from meli.infra.repository import car_repository
 from meli.infra.repository import history_price_repository
