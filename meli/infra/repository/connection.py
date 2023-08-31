@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-
+# pylint: disable=line-too-long
 SQLALCHEMY_DATABASE_URL = "mariadb+mariadbconnector://admin:password@192.168.31.200:3306/MELICARS?charset=utf8mb4"
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL
